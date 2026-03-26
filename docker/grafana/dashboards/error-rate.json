@@ -1,0 +1,16 @@
+{
+  "title": "Error rate",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Service errors",
+      "targets": [
+        {
+          "expr": "sum(rate(error_rate_total[5m])) by (service)"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

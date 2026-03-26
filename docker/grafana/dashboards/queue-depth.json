@@ -1,0 +1,16 @@
+{
+  "title": "Queue depth",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Queue depth",
+      "targets": [
+        {
+          "expr": "queue_depth"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

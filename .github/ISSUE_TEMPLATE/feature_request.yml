@@ -1,0 +1,29 @@
+name: Feature Request
+description: Предложить новую функциональность.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую проблему решаем
+      description: Опишите текущий pain point.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Предлагаемое решение
+      description: Опишите ожидаемое поведение и API/UX.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Альтернативы
+      description: Какие альтернативы рассматривались.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Влияние
+      description: Влияние на API, brokers, bot, workers, observability.
