@@ -4,7 +4,7 @@ from src.workers import analytics_worker, email_worker, logger_worker, telegram_
 
 
 @pytest.mark.asyncio
-async def test_workers_delegate_to_runtime(monkeypatch):
+async def test_workers_run_entrypoints(monkeypatch):
     called = {"email": 0, "logger": 0, "analytics": 0, "telegram": 0}
 
     async def _run_email():
