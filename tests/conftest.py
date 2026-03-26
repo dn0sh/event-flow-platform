@@ -1,3 +1,5 @@
+from collections.abc import AsyncGenerator, AsyncIterator
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 
@@ -71,8 +73,9 @@ def fake_nats() -> FakeNats:
 
 
 @pytest.fixture()
-async def client() -> AsyncClient:
-    async def _no_db():
+async def client() -> AsyncIterator[AsyncClient]:
+    async def _no_db() -> AsyncGenerator[None, None]:
+        """Async DB dependency override: no real session in unit tests."""
         yield None
 
     app.dependency_overrides[get_db_session] = _no_db

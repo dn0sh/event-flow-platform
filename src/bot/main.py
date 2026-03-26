@@ -2,6 +2,7 @@ import asyncio
 import signal
 
 from aiogram import Bot, Dispatcher
+from aiogram.exceptions import TelegramAPIError, TelegramUnauthorizedError
 from structlog import get_logger
 
 from src.bot.handlers.admin import router as admin_router
@@ -11,6 +12,34 @@ from src.config.logging import configure_logging
 from src.config.settings import get_settings
 
 logger = get_logger(__name__)
+
+
+async def _wait_until_telegram_api_reachable(bot: Bot) -> None:
+    """Повторяет get_me(), пока не удастся достучаться до api.telegram.org (VPN/фаервол/прокси)."""
+    delay = 5.0
+    max_delay = 60.0
+    attempt = 0
+    while True:
+        try:
+            me = await bot.get_me()
+            logger.info("telegram_api_connected", bot_username=me.username, bot_id=me.id)
+            return
+        except TelegramUnauthorizedError:
+            logger.error("telegram_invalid_token")
+            raise
+        except TelegramAPIError as exc:
+            attempt += 1
+            logger.warning(
+                "telegram_api_unreachable",
+                attempt=attempt,
+                error=str(exc),
+                hint=(
+                    "Нет исходящего HTTPS к api.telegram.org:443 из контейнера. "
+                    "Проверьте фаервол, VPN на хосте, DNS; при необходимости задайте HTTP_PROXY/HTTPS_PROXY."
+                ),
+            )
+            await asyncio.sleep(delay)
+            delay = min(delay * 1.5, max_delay)
 
 
 async def main() -> None:
@@ -34,6 +63,8 @@ async def main() -> None:
             loop.add_signal_handler(sig, _stop_handler)
         except NotImplementedError:
             pass
+
+    await _wait_until_telegram_api_reachable(bot)
 
     polling_task = asyncio.create_task(dispatcher.start_polling(bot))
     stop_task = asyncio.create_task(stop_event.wait())

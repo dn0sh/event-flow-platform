@@ -18,7 +18,10 @@ class RabbitMQService:
     NOTIFICATIONS_EMAIL = "notifications.email"
     NOTIFICATIONS_TELEGRAM = "notifications.telegram"
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=8))
+    @retry(
+        stop=stop_after_attempt(20),
+        wait=wait_exponential(multiplier=1.5, min=2, max=30),
+    )
     async def connect(self) -> AbstractRobustConnection:
         return await aio_pika.connect_robust(
             host=settings.rabbitmq_host,

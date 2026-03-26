@@ -1,0 +1,18 @@
+{
+  "generated_at": 1774560738,
+  "requests": 37482,
+  "failures": 0,
+  "latency_ms": {
+    "p50": 7,
+    "p95": 120.0,
+    "p99": 210.0
+  },
+  "throughput_rps": 314.97,
+  "error_rate_percent": 0.0,
+  "scenario_counts": {
+    "create_orders": 1001,
+    "cache_hit_reads": 27300,
+    "status_updates": 9167
+  },
+  "created_orders_total": 1001
+}

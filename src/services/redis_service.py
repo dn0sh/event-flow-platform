@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from collections.abc import Sequence
-from typing import Any, cast
+from typing import Any, Awaitable, cast
 
 from redis.asyncio import Redis
 
@@ -20,7 +20,8 @@ class RedisService:
         )
 
     async def ping(self) -> bool:
-        return bool(await self._client.ping())
+        raw = self._client.ping()
+        return bool(await cast(Awaitable[bool], raw))
 
     async def get_cached_order(self, order_id: str) -> str | None:
         value = await self._client.get(f"order:{order_id}")

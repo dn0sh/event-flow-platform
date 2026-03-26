@@ -107,9 +107,7 @@ async def test_kafka_builders(monkeypatch):
             return {"id": 1}
 
     monkeypatch.setattr(kafka_service, "AIOKafkaProducer", lambda **_kwargs: FakeProducer())
-    monkeypatch.setattr(
-        kafka_service, "AIOKafkaConsumer", lambda *_args, **_kwargs: FakeConsumer()
-    )
+    monkeypatch.setattr(kafka_service, "AIOKafkaConsumer", lambda *_args, **_kwargs: FakeConsumer())
     monkeypatch.setattr(kafka_service.httpx, "AsyncClient", lambda timeout: FakeClient())
     svc = kafka_service.KafkaService()
     producer = await svc.build_producer()

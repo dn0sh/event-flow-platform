@@ -88,5 +88,5 @@ async def test_start_nats_bridge_failure(monkeypatch):
         raise RuntimeError("nats down")
 
     monkeypatch.setattr(ws_module.nats_service, "connect", _fail_connect)
-    task = await ws_module.start_nats_realtime_bridge()
-    assert task is None
+    bridge = await ws_module.start_nats_realtime_bridge()
+    assert bridge is None

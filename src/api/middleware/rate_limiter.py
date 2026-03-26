@@ -17,6 +17,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if request.url.path.startswith("/health") or request.url.path.startswith("/metrics"):
             return await call_next(request)
 
+        if settings.rate_limit_per_minute <= 0:
+            return await call_next(request)
+
         ip = request.client.host if request.client else "unknown"
         limited = await redis_service.is_rate_limited(ip, settings.rate_limit_per_minute)
         if limited:

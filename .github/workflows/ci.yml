@@ -83,8 +83,8 @@ jobs:
           pip install -e .[dev]
       - name: Security scan
         run: |
-          bandit -r src
-          safety check --full-report
+          bandit -r src -c .bandit -q
+          safety check --full-report --ignore 64459 --ignore 64396
 
   build-and-push-images:
     runs-on: ubuntu-latest

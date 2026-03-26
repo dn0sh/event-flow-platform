@@ -8,8 +8,8 @@ from src.api.middleware.rate_limiter import RateLimitMiddleware
 from src.api.routes.events import router as events_router
 from src.api.routes.health import router as health_router
 from src.api.routes.orders import router as orders_router
+from src.api.websocket.notifications import router as websocket_router
 from src.api.websocket.notifications import (
-    router as websocket_router,
     start_nats_realtime_bridge,
     stop_nats_bridge,
 )
@@ -27,7 +27,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     await stop_nats_bridge(bridge)
 
 
-app = FastAPI(title="Event Flow Platform", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Event Flow Platform", version="1.1.0", lifespan=lifespan)
 app.add_middleware(RateLimitMiddleware)
 
 app.include_router(orders_router)

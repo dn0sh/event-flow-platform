@@ -1,0 +1,3 @@
+# API and workers bind 0.0.0.0 intentionally inside Docker / dev.
+skips:
+  - B104

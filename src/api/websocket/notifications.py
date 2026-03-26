@@ -82,9 +82,7 @@ async def websocket_notifications(websocket: WebSocket) -> None:
             order_id = str(payload.get("order_id", "")).strip()
             if action == "subscribe" and order_id:
                 manager.subscribe(websocket, order_id)
-                await websocket.send_text(
-                    json.dumps({"type": "subscribed", "order_id": order_id})
-                )
+                await websocket.send_text(json.dumps({"type": "subscribed", "order_id": order_id}))
             elif action == "unsubscribe" and order_id:
                 manager.unsubscribe(websocket, order_id)
                 await websocket.send_text(

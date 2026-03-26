@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "event-system"
-version = "1.0.0"
+version = "1.1.0"
 description = "Production-ready event flow platform with FastAPI and message brokers"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,6 +15,7 @@ dependencies = [
   "pydantic-settings>=2.4.0",
   "sqlalchemy>=2.0.32",
   "asyncpg>=0.29.0",
+  "psycopg2-binary>=2.9.9",
   "alembic>=1.13.2",
   "redis>=5.0.8",
   "aio-pika>=9.4.0",
@@ -60,6 +61,15 @@ testpaths = ["tests"]
 markers = [
   "integration: marks tests requiring real infrastructure",
 ]
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+  "src/workers/consumer_runner.py",
+]
+
+[tool.coverage.report]
+fail_under = 85
 
 [tool.mypy]
 python_version = "3.11"

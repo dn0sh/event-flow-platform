@@ -24,8 +24,15 @@
 - Coverage: `pytest --cov=src --cov-fail-under=85`
 - Lint + typecheck: `black --check . && isort --check-only . && flake8 src tests && mypy src`
 
+## Load testing и benchmark
+
+- Команды: `.\scripts\task.ps1 load-test`, затем `python scripts/benchmark.py` (из корня, с активированным `.venv`).
+- Перед Locust задайте в `.env` **`RATE_LIMIT_PER_MINUTE=0`** и перезапустите контейнер `api`, иначе с одного IP придёт масса **HTTP 429**.
+- Подробно: [`load-testing.md`](load-testing.md), отчёт: `results/benchmark_report.md`.
+
 ## Troubleshooting
 - **Port already used:** убедитесь, что `8060-8069` свободны.
 - **Redis/RabbitMQ/Kafka not reachable:** проверьте `docker compose ps` и healthchecks.
 - **Telegram bot not responding:** проверьте `TELEGRAM_BOT_TOKEN` и логи `bot` сервиса.
 - **Coverage gate failed:** добавьте unit tests в `tests/test_api`, `tests/test_services`, `tests/test_bot`.
+- **Locust 429:** см. раздел выше и [`load-testing.md`](load-testing.md).

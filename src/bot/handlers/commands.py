@@ -19,35 +19,33 @@ async def start_command(message: Message) -> None:
 
 @router.message(Command("orders"))
 async def orders_command(message: Message) -> None:
-    try:
-        orders = await api_client.list_orders(limit=5)
-        if not orders:
-            await message.answer("Активных заказов пока нет.")
-            return
+    orders = await api_client.list_orders(limit=5)
+    if orders is None:
+        await message.answer("Сервис заказов временно недоступен. Попробуйте позже.")
+        return
+    if not orders:
+        await message.answer("Активных заказов пока нет.")
+        return
 
-        lines = ["Активные заказы:"]
-        for order in orders:
-            lines.append(f"- {order['id']} | {order['status']} | {order['amount']}")
-        first_id = str(orders[0]["id"])
-        await message.answer("\n".join(lines), reply_markup=order_actions_keyboard(first_id))
-    except Exception:
-        logger.exception("orders_command_failed")
-        await message.answer("Не удалось получить список заказов. Попробуйте позже.")
+    lines = ["Активные заказы:"]
+    for order in orders:
+        lines.append(f"- {order['id']} | {order['status']} | {order['amount']}")
+    first_id = str(orders[0]["id"])
+    await message.answer("\n".join(lines), reply_markup=order_actions_keyboard(first_id))
 
 
 @router.message(Command("subscribe"))
 async def subscribe_command(message: Message) -> None:
-    try:
-        payload = {
-            "chat_id": message.chat.id,
-            "user_id": message.from_user.id if message.from_user else 0,
-            "event": "subscribe",
-        }
-        await publisher.publish_telegram_notification(payload)
+    payload = {
+        "chat_id": message.chat.id,
+        "user_id": message.from_user.id if message.from_user else 0,
+        "event": "subscribe",
+    }
+    ok = await publisher.publish_telegram_notification(payload)
+    if ok:
         await message.answer("Подписка на уведомления активирована.")
-    except Exception:
-        logger.exception("subscribe_command_failed")
-        await message.answer("Не удалось оформить подписку.")
+    else:
+        await message.answer("Не удалось связаться с очередью уведомлений. Попробуйте позже.")
 
 
 @router.message(Command("status"))
@@ -59,12 +57,11 @@ async def status_command(message: Message) -> None:
         return
 
     order_id = parts[1].strip()
-    try:
-        status = await api_client.get_order_status(order_id)
-        await message.answer(f"Статус заказа {order_id}: {status}")
-    except Exception:
-        logger.exception("status_command_failed", order_id=order_id)
-        await message.answer("Не удалось получить статус заказа.")
+    status = await api_client.get_order_status(order_id)
+    if status is None:
+        await message.answer("Сервис заказов временно недоступен. Попробуйте позже.")
+        return
+    await message.answer(f"Статус заказа {order_id}: {status}")
 
 
 @router.message(Command("help"))

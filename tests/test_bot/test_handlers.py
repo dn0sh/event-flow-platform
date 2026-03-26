@@ -22,7 +22,7 @@ class DummyCallback:
         self.message = type("Msg", (), {"chat": type("Chat", (), {"id": 101})()})()
         self.from_user = type("User", (), {"id": 123456789})()
 
-    async def answer(self, _text: str):
+    async def answer(self, _text: str = "", **kwargs):
         self.called = True
 
 
@@ -37,7 +37,7 @@ async def test_command_handlers(monkeypatch):
 
     class FakePublisher:
         async def publish_telegram_notification(self, payload):
-            return None
+            return True
 
     monkeypatch.setattr(commands, "api_client", FakeApi())
     monkeypatch.setattr(commands, "publisher", FakePublisher())
@@ -68,7 +68,7 @@ async def test_admin_handler(monkeypatch):
 async def test_callback_handler(monkeypatch):
     class FakePublisher:
         async def publish_telegram_notification(self, payload):
-            return None
+            return True
 
     monkeypatch.setattr(callbacks, "publisher", FakePublisher())
     query = DummyCallback()

@@ -16,9 +16,7 @@ async def _process_email(payload: dict[str, object]) -> None:
 async def run() -> None:
     settings = get_settings()
     queue = settings.rabbitmq_consumer_queue or RabbitMQService.NOTIFICATIONS_EMAIL
-    await run_rabbitmq_consumer(
-        queue, _process_email, health_port=8091, worker_name="email-worker"
-    )
+    await run_rabbitmq_consumer(queue, _process_email, health_port=8091, worker_name="email-worker")
 
 
 if __name__ == "__main__":

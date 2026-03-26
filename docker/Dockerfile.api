@@ -1,10 +1,15 @@
 FROM python:3.11-slim
 
 WORKDIR /app
+# alembic и uvicorn импортируют пакет src; без этого ModuleNotFoundError при `alembic upgrade`
+ENV PYTHONPATH=/app
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src ./src
 COPY pyproject.toml .
+COPY alembic ./alembic
+COPY alembic.ini .
 
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8060"]
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn src.api.main:app --host 0.0.0.0 --port 8060"]

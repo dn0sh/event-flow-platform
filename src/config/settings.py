@@ -28,7 +28,8 @@ class Settings(BaseSettings):
     redis_port: int = 6379
     redis_db: int = 0
     redis_ttl_seconds: int = 300
-    rate_limit_per_minute: int = 100
+    # 0 = без лимита (удобно для Locust; иначе все клиенты с одного IP быстро получают 429).
+    rate_limit_per_minute: int = Field(default=100, ge=0)
 
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672

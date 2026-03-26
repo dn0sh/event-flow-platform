@@ -44,9 +44,7 @@ class KafkaService:
     ) -> None:
         await self.publish_event(producer, self.ORDER_EVENTS_TOPIC, payload)
 
-    async def publish_audit_log(
-        self, producer: AIOKafkaProducer, payload: dict[str, Any]
-    ) -> None:
+    async def publish_audit_log(self, producer: AIOKafkaProducer, payload: dict[str, Any]) -> None:
         await self.publish_event(producer, self.AUDIT_LOG_TOPIC, payload)
 
     async def register_schema(self, subject: str, schema: dict[str, Any]) -> dict[str, Any]:

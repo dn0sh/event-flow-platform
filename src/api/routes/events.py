@@ -9,7 +9,7 @@ router = APIRouter(prefix="/events", tags=["events"])
 
 async def _stream_events() -> AsyncGenerator[str, None]:
     while True:
-        yield "event: heartbeat\ndata: {\"status\":\"ok\"}\n\n"
+        yield 'event: heartbeat\ndata: {"status":"ok"}\n\n'
         await asyncio.sleep(2)
 
 

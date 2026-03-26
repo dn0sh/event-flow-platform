@@ -64,6 +64,9 @@ async def run_rabbitmq_consumer(
     health_server = await asyncio.start_server(_health, host="0.0.0.0", port=health_port)
     logger.info("worker_health_started", worker=worker_name, port=health_port)
 
+    # Healthcheck "rabbitmq-diagnostics ping" иногда раньше, чем слушает AMQP (5672) — даём брокеру дорваться.
+    await asyncio.sleep(3)
+
     svc = RabbitMQService()
     connection = await svc.connect()
     channel = await connection.channel()
@@ -72,6 +75,8 @@ async def run_rabbitmq_consumer(
         queue = await channel.declare_queue(queue_name, passive=True)
     except Exception:
         queue = await channel.declare_queue(queue_name, durable=True)
+
+    logger.info("rabbitmq_consumer_ready", worker=worker_name, queue=queue_name)
 
     try:
         async with queue.iterator() as queue_iter:
